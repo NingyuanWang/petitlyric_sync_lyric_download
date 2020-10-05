@@ -22,7 +22,7 @@ def find_lyric_folder(directory):
     import codecs
     for (root_dir,sub_dir,filenames) in os.walk(directory):
         for filename in filenames:
-            if filename.endswith(".m4a") or filename.endswith(".mp3"):
+            if filename.endswith(".m4a") or filename.endswith(".mp3") or filename.endswith(".wma"):
                 filename_bare = filename[:-4]
             elif filename.endswith(".flac"):
                 filename_bare = filename[:-5]
@@ -93,7 +93,7 @@ def find_lyric(path_to_music_file):
     elif lyrics_type == '3':
         lyrics_petitlyricform = base64.b64decode(lyrics_base64).decode("UTF-8")
         lyrics_tree = ET.fromstring(lyrics_petitlyricform)
-        lyric_string = ''
+        lyric_string = '[00:00.00] (petitlyric_wsy)\n'
         for line in lyrics_tree.findall('line'):
             timepoint = line.find('word').find('starttime').text
             lyric_line = line.find('linestring').text
@@ -114,7 +114,7 @@ def lsy_decoder(lsy_base64_lyric,lyrics_text_base64):#Assumes running on little 
     import io
     lyric_unsynced = base64.b64decode(lyrics_text_base64).decode("UTF-8")
     lyric_line_reader = io.StringIO(lyric_unsynced)
-    lyric_string = '[00:00.00] ...\n'
+    lyric_string = '[00:00.00] (petitlyric_lsy)\n'
     lyrics_encrypted = base64.b64decode(lsy_base64_lyric)
     protection_id = np.uint16(int.from_bytes(lyrics_encrypted[0x1a:0x1a+2],byteorder='little',signed=False))
     protection_key_switch_flag = bool(lyrics_encrypted[0x19])
@@ -148,7 +148,7 @@ def lsy_decoder(lsy_base64_lyric,lyrics_text_base64):#Assumes running on little 
     return lyric_string
 
 def main():
-    find_lyric_folder('Y:\media\Music\THE IDOLM@STER\ANIMATION MASTER SPECIAL')
+    find_lyric_folder('Y:\media\Music\THE IDOLM@STER CG\STARLIGHT MASTER')
 
 if __name__ == '__main__':
     main()
